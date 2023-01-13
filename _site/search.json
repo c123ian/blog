@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Cian Prendergast’s Blog",
+    "section": "",
+    "text": "machine learning\n\n\nfastai\n\n\n\n\n\n\n\n\n\n\n\nJan 4, 2023\n\n\nCian Prendergast\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nDec 27, 2022\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Bee ID Application",
+    "section": "",
+    "text": "1. Project Scoping\nskip\n\n\n2. Data Engineering\nIn order to train the image classifier will first need a labelled dataset. Luckily the NBDC have a large bee species dataset available which itself was collated from a network of scientific NGO’s aimed at providing open source data here\nThe dataset contains 99 bee species which will be used to train a multi-label classification model. However, the dataset classes are highly imbalanced. For example, honeybees have over 600,000 images present in the dataset while some solitary bee species only have 10-15 images.\nWe simple go through each bee species name, click the link and download the files manually.\n\nFigure 3. Website contaning bee data.\nNext will need to unzip each folder, convert text files to csv and dowload the image URLs.\nimport urllib.request\nimport os\nimport pandas as pd\nimport re\nimport csv\n\n# optinal (Windows ppup alerting when download finished)\nimport time\nfrom plyer import notification\nManually paste bee species from list.\nbeeName = \"Andrena stragulata\"\n\nwith open(r\"C:\\Users\\Cian\\Documents\\Bee_Images\\{}\".format(beeName)+\"\\multimedia.txt\",encoding=\"utf8\") as file:\n        for line in file:\n            urls = re.findall('(https?://[^\\s]+?\\.jpg)', line) # extract all urls which have .jpg\n            #print([x for x in urls if x])\n            \n            Urls_img.append([x for x in urls if x])\nLets check how many are downloaded per bee species (i.e., Andrena stragulata).\nlength_list = len(Urls_img)\n\nprint(\"the num of elem stored is\", length_list) \nRemove any blanks (findall method returns a lot of empty lists).\nres = [ele for ele in Urls_img if ele != []]\nCheck final number of bee URLs stored in the list, after removing blanks.\nlength_list = len(res)\nprint(\"the num of elem stored is\", length_list) \nOutput for Andrena stragulata is:\nthe num of elem stored is 2\nAn optional Excel trick I used is below. If there is a large number of images (ie.., Honeybee) in Excel (“Go To” menu) and in the Reference section type the address of the range I want to select. For instance, to select the first 100,000 rows, type 1:100000\nprint(\"1:\",length_list/3) # used if very large, can split up in Excel ie: 'cell 1:50000'\nNext, will convert this list of bee image URLs into a CSV file:\nwith open(\"{}\".format(beeName)+\".csv\", 'w', encoding='UTF8', newline='') as f:\n    writer = csv.writer(f)\n    # write multiple rows\n    writer.writerows(res)\n    \nThen will make a folder\ndir = os.path.join(r\"C:\\Users\\Cian\\Documents\\Dataset_Bees\\{}\".format(beeName))\nif not os.path.exists(dir):\n    os.mkdir(dir)\nWe can also make a sub-folder, for naming files. This is a bot of a round-about-way but how it’s hopw I worked it out for this project.\ndir = os.path.join(r\"C:\\Users\\Cian\\Documents\\Dataset_Bees\\{}\".format(beeName)+\"\\data\")\nif not os.path.exists(dir):\n    os.mkdir(dir)\nThese next two variables point to where the CSV file of image URL is stored where store the downloaded images\nURL_PATH = (r\"C:\\Users\\Cian\\Documents\\Test_Bee_Images\\{}\".format(beeName)+\".csv\") \n\nIMAGE_PATH = (r\"C:\\Users\\Cian\\Documents\\Dataset_Bees\\{}\".format(beeName)+\"\\data\") \nSo for example print(IMAGE_PATH) will output:\nC:\\Users\\Cian\\Documents\\Dataset_Bees\\Andrena stragulata\\data\nFinally, we now run this method below to start downloading the images, depending on how many are stored in the list this can take a long time.\ndef url_jpg(URL_PATH, IMAGE_PATH):\n    URLS = pd.read_csv(URL_PATH)\n    url = []\n    for i in enumerate(URLS.values):\n        links = i[1][0]\n        url.append(links)\n\n    for j in range(len(url)):\n        fileName = ('image{}.jpg'.format(j))\n        imagePath = ('{}{}'.format(IMAGE_PATH, fileName))\n        try: \n            urllib.request.urlretrieve(url[j], imagePath)\n            print('{} saved.'.format(fileName))\n        except:\n            pass\n    notification.notify(\n        title = \"Install complete\",\n        message = \"{}\".format(beeName),\n        timeout = 10\n    )\n    \nRemember, to run a method stored in a jupyter cell, we have to call it in a seperate cell such as: python url_jpg(URL_PATH, IMAGE_PATH)"
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "Since this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts.\nimport curses\ndef main(stdscr):\n    while True:\n        k = stdscr.getkey()\nif __name__ == \"__main__\":\n    curses.wrapper(main)"
+  }
+]
